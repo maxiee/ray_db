@@ -12,7 +12,7 @@ void main() {
   });
   tearDown(() => sdb.dispose());
 
-  test('adds one to input values', () async {
+  test('test hasCollection', () async {
     expect(db.hasCollection('test'), false);
     db.collection('test');
     expect(db.hasCollection('test'), true);
