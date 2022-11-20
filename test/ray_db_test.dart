@@ -17,4 +17,22 @@ void main() {
     db.collection('test');
     expect(db.hasCollection('test'), true);
   });
+
+  test('test hasCollection', () async {
+    expect(db.hasCollection('test'), false);
+    db.collection('test');
+    expect(db.hasCollection('test'), true);
+    final stmt = db.db.prepare("PRAGMA table_info(test);");
+    final ret = stmt.select();
+    print(ret);
+  });
+
+  test('test hasCollection', () async {
+    expect(db.hasCollection('test'), false);
+    db.collection('test');
+    expect(db.hasCollection('test'), true);
+    final stmt = db.db.prepare("PRAGMA table_list;");
+    final ret = stmt.select();
+    print(ret);
+  });
 }
