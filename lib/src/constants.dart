@@ -1,3 +1,3 @@
 enum DataType {
-  integer,
+  INTEGER,
 }

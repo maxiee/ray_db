@@ -1,8 +1,11 @@
+import 'package:ray_db/src/column.dart';
+import 'package:ray_db/src/util/data_utils.dart';
 import 'package:sqlite3/sqlite3.dart' as sq;
 
 class Collection {
   sq.Database db;
   String collection;
+  Map<String, Column> columns = {};
 
   Collection(this.collection, this.db) {
     if (collection.contains(';') || collection.contains(' ')) {
@@ -10,6 +13,19 @@ class Collection {
     }
     db.execute(
         'CREATE TABLE IF NOT EXISTS $collection (id INTEGER PRIMARY KEY)');
+    parseColumns();
+  }
+
+  void parseColumns() {
+    final stmt = db.prepare("PRAGMA table_info(test);");
+    final ret = stmt.select();
+    for (Map column in ret) {
+      String name = column['name'];
+      Column c = Column(name, DataUtils.parseType(column['type']),
+          column['notnull'] == 1, column['pk'] == 1,
+          defaultValue: column['dflt_value']);
+      columns[name] = c;
+    }
   }
 
   static hasCollection(sq.Database db, String collection) {
