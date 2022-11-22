@@ -2,7 +2,7 @@ import 'package:ray_db/src/constants.dart';
 
 class Column {
   String name;
-  DataType type;
+  InnerDataType type;
   bool notNull;
   dynamic defaultValue;
   bool primaryKey;

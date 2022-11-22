@@ -1,4 +1,5 @@
 import 'package:ray_db/src/column.dart';
+import 'package:ray_db/src/constants.dart';
 import 'package:ray_db/src/util/data_utils.dart';
 import 'package:sqlite3/sqlite3.dart' as sq;
 
@@ -16,6 +17,28 @@ class Collection {
     parseColumns();
   }
 
+  void storeMap(Map<String, dynamic> data) {
+    List<String> sqlColumns = [];
+    List<dynamic> sqlValues = [];
+
+    for (final entry in data.entries) {
+      String key = entry.key;
+      dynamic value = entry.value;
+      InnerDataType valueType = DataUtils.parseObjType(value);
+
+      if (!columns.containsKey(key)) {
+        createColumn(key, valueType);
+      }
+
+      sqlColumns.add(key);
+      sqlValues.add(value);
+    }
+
+    db.execute(
+        "INSERT INTO $collection (${sqlColumns.join(',')}) VALUES(${sqlValues.map((e) => "?").join(',')});",
+        sqlValues);
+  }
+
   void parseColumns() {
     final stmt = db.prepare("PRAGMA table_info(test);");
     final ret = stmt.select();
@@ -26,6 +49,11 @@ class Collection {
           defaultValue: column['dflt_value']);
       columns[name] = c;
     }
+  }
+
+  void createColumn(String name, InnerDataType type) {
+    db.execute("ALTER TABLE $collection ADD $name ${type.name}");
+    columns[name] = Column(name, type, false, false);
   }
 
   static hasCollection(sq.Database db, String collection) {

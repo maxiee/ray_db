@@ -26,7 +26,7 @@ void main() {
     expect(collection.columns.containsKey('id'), true);
     Column column = collection.columns['id']!;
     expect(column.name, 'id');
-    expect(column.type, DataType.INTEGER);
+    expect(column.type, InnerDataType.INTEGER);
     expect(column.notNull, false);
     expect(column.defaultValue, null);
     expect(column.primaryKey, true);
@@ -39,5 +39,20 @@ void main() {
     final stmt = db.db.prepare("PRAGMA table_list;");
     final ret = stmt.select();
     print(ret);
+  });
+
+  test('test store flatmap', () async {
+    Collection collection = db.collection('test');
+    collection.storeMap({'name': 'maeiee', 'flutter_skill': 1});
+
+    expect(collection.columns.containsKey('name'), true);
+    expect(collection.columns['name']!.type, InnerDataType.TEXT);
+    expect(collection.columns['name']!.notNull, false);
+    expect(collection.columns['name']!.primaryKey, false);
+
+    expect(collection.columns.containsKey('flutter_skill'), true);
+    expect(collection.columns['flutter_skill']!.type, InnerDataType.INTEGER);
+    expect(collection.columns['flutter_skill']!.notNull, false);
+    expect(collection.columns['flutter_skill']!.primaryKey, false);
   });
 }

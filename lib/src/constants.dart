@@ -1,3 +1,1 @@
-enum DataType {
-  INTEGER,
-}
+enum InnerDataType { INTEGER, REAL, TEXT, BLOB }
