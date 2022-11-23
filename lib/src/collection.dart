@@ -1,5 +1,6 @@
 import 'package:ray_db/src/column.dart';
 import 'package:ray_db/src/constants.dart';
+import 'package:ray_db/src/query/selector_builder.dart';
 import 'package:ray_db/src/util/data_utils.dart';
 import 'package:sqlite3/sqlite3.dart' as sq;
 
@@ -15,6 +16,10 @@ class Collection {
     db.execute(
         'CREATE TABLE IF NOT EXISTS $collection (id INTEGER PRIMARY KEY)');
     parseColumns();
+  }
+
+  SelectorBuilder where() {
+    return SelectorBuilder(this);
   }
 
   void storeMap(Map<String, dynamic> data) {

@@ -10,6 +10,22 @@ class SelectorBuilder {
 
   List<_Expression> _expressions = [];
 
+  List<Map<String, dynamic>> findAll() {
+    final ret = _collection.db.select(toSQL());
+    if (ret.isNotEmpty) {
+      return ret;
+    } else {
+      return [];
+    }
+  }
+
+  Map<String, dynamic>? findFirst() {
+    final ret = _collection.db.select(toSQL());
+    if (ret.isNotEmpty) {
+      return ret.first;
+    }
+  }
+
   // equal
   SelectorBuilder eq(String column, dynamic value) {
     _expressions.add(_Expression(column, value, _ExpressionType.eq));
@@ -66,7 +82,7 @@ class SelectorBuilder {
     return this;
   }
 
-  String _toSQL() {
+  String toSQL() {
     StringBuffer sb = StringBuffer();
     sb.write("SELECT ${_collection.columns.keys.join(',')} ");
     sb.write("FROM ${_collection.collection} ");
@@ -88,6 +104,7 @@ class SelectorBuilder {
           sb.write(' AND ');
         }
       }
+      current++;
     }
     if (_limit != null) {
       sb.write(' LIMIT $_limit');
@@ -100,19 +117,23 @@ class SelectorBuilder {
   }
 
   String _expression2SQL(_Expression e) {
+    dynamic value = e.value;
+    if (value is String) {
+      value = "'$value'";
+    }
     switch (e.type) {
       case _ExpressionType.eq:
-        return "${e.column} = ${e.value}";
+        return "${e.column} = $value";
       case _ExpressionType.ne:
-        return "${e.column} != ${e.value}";
+        return "${e.column} != $value";
       case _ExpressionType.gt:
-        return "${e.column} > ${e.value}";
+        return "${e.column} > $value";
       case _ExpressionType.lt:
-        return "${e.column} < ${e.value}";
+        return "${e.column} < $value";
       case _ExpressionType.gte:
-        return "${e.column} >= ${e.value}";
+        return "${e.column} >= $value";
       case _ExpressionType.lte:
-        return "${e.column} <= ${e.value}";
+        return "${e.column} <= $value";
       case _ExpressionType.and:
       case _ExpressionType.or:
       default:
