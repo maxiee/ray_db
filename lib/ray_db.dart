@@ -1,7 +1,6 @@
 library ray_db;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/collection.dart' show Collection;
+export 'src/column.dart' show Column;
+export 'src/database.dart' show Database, openDatabase;
+export 'src/query/selector_builder.dart' show SelectorBuilder;

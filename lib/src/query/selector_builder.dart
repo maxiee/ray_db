@@ -85,26 +85,28 @@ class SelectorBuilder {
   String toSQL() {
     StringBuffer sb = StringBuffer();
     sb.write("SELECT ${_collection.columns.keys.join(',')} ");
-    sb.write("FROM ${_collection.collection} ");
-    sb.write("WHERE ");
-    int current = 0;
-    while (current < _expressions.length) {
-      _Expression e = _expressions[current];
-      sb.write(_expression2SQL(e));
+    sb.write("FROM ${_collection.collection}");
+    if (_expressions.isNotEmpty) {
+      sb.write(" WHERE ");
+      int current = 0;
+      while (current < _expressions.length) {
+        _Expression e = _expressions[current];
+        sb.write(_expression2SQL(e));
 
-      if (current + 1 < _expressions.length) {
-        if (_expressions[current + 1].type == _ExpressionType.or) {
-          sb.write(' OR ');
-          current++;
-        } else if (_expressions[current + 1].type == _ExpressionType.and) {
-          sb.write(' AND ');
-          current++;
-        } else {
-          // allow use to ignore explicit 'and'
-          sb.write(' AND ');
+        if (current + 1 < _expressions.length) {
+          if (_expressions[current + 1].type == _ExpressionType.or) {
+            sb.write(' OR ');
+            current++;
+          } else if (_expressions[current + 1].type == _ExpressionType.and) {
+            sb.write(' AND ');
+            current++;
+          } else {
+            // allow use to ignore explicit 'and'
+            sb.write(' AND ');
+          }
         }
+        current++;
       }
-      current++;
     }
     if (_limit != null) {
       sb.write(' LIMIT $_limit');
