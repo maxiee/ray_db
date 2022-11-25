@@ -84,7 +84,7 @@ class SelectorBuilder {
 
   String toSQL() {
     StringBuffer sb = StringBuffer();
-    sb.write("SELECT ${_collection.columns.keys.join(',')} ");
+    sb.write("SELECT * ");
     sb.write("FROM ${_collection.collection}");
     if (_expressions.isNotEmpty) {
       sb.write(" WHERE ");

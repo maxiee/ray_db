@@ -19,7 +19,7 @@ void main() {
     final builder =
         collection.where().eq('name', 'maeiee').eq('career', 'coder');
     expect(builder.toSQL(),
-        'SELECT id,name,career FROM test WHERE name = \'maeiee\' AND career = \'coder\';');
+        'SELECT * FROM test WHERE name = \'maeiee\' AND career = \'coder\';');
     expect(builder.findAll(), [
       {'id': 1, 'name': 'maeiee', 'career': 'coder'}
     ]);
@@ -28,8 +28,7 @@ void main() {
   test('test equal string2', () {
     collection.storeMap({'name': 'maeiee', 'career': 'coder'});
     final builder = collection.where().eq('name', 'maeiee');
-    expect(builder.toSQL(),
-        'SELECT id,name,career FROM test WHERE name = \'maeiee\';');
+    expect(builder.toSQL(), 'SELECT * FROM test WHERE name = \'maeiee\';');
     expect(builder.findAll(), [
       {'id': 1, 'name': 'maeiee', 'career': 'coder'}
     ]);
@@ -38,7 +37,7 @@ void main() {
   test('test empty query', () {
     collection.storeMap({'name': 'maeiee', 'career': 'coder'});
     final builder = collection.where();
-    expect(builder.toSQL(), 'SELECT id,name,career FROM test;');
+    expect(builder.toSQL(), 'SELECT * FROM test;');
     expect(builder.findAll(), [
       {'id': 1, 'name': 'maeiee', 'career': 'coder'}
     ]);
