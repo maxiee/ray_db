@@ -5,6 +5,8 @@ abstract class DataUtils {
     switch (type) {
       case "INTEGER":
         return InnerDataType.INTEGER;
+      case "TEXT":
+        return InnerDataType.TEXT;
       default:
         throw FormatException();
     }

@@ -29,6 +29,9 @@ class Collection {
     for (final entry in data.entries) {
       String key = entry.key;
       dynamic value = entry.value;
+      // don't create column for field with null value
+      // because we don't the exactly type
+      if (value == null) continue;
       InnerDataType valueType = DataUtils.parseObjType(value);
 
       if (!columns.containsKey(key)) {
@@ -45,8 +48,9 @@ class Collection {
   }
 
   void parseColumns() {
-    final stmt = db.prepare("PRAGMA table_info(test);");
+    final stmt = db.prepare("PRAGMA table_info($collection);");
     final ret = stmt.select();
+    print('parseColumns ret = $ret');
     for (Map column in ret) {
       String name = column['name'];
       Column c = Column(name, DataUtils.parseType(column['type']),
