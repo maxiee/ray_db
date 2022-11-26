@@ -42,4 +42,12 @@ void main() {
       {'id': 1, 'name': 'maeiee', 'career': 'coder'}
     ]);
   });
+
+  test('test empty query with empty collection', () {
+    // collection.storeMap({'name': 'maeiee', 'career': 'coder'});
+    final builder = collection.where();
+    expect(builder.toSQL(), 'SELECT * FROM test;');
+    expect(builder.findAll(), []);
+    expect(builder.findFirst(), null);
+  });
 }

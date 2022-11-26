@@ -1,6 +1,6 @@
 import 'package:ray_db/src/column.dart';
 import 'package:ray_db/src/constants.dart';
-import 'package:ray_db/src/query/selector_builder.dart';
+import 'package:ray_db/src/selector_builder.dart';
 import 'package:ray_db/src/util/data_utils.dart';
 import 'package:sqlite3/sqlite3.dart' as sq;
 

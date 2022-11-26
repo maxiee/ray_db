@@ -9,7 +9,7 @@ class Database {
 
   Database(this.db) {}
 
-  collection(String collection) {
+  Collection collection(String collection) {
     return Collection(collection, db);
   }
 

@@ -1,6 +1,6 @@
 library ray_db;
 
-export 'src/collection.dart' show Collection;
-export 'src/column.dart' show Column;
-export 'src/database.dart' show Database, openDatabase;
-export 'src/query/selector_builder.dart' show SelectorBuilder;
+export 'src/collection.dart';
+export 'src/column.dart';
+export 'src/database.dart';
+export 'src/selector_builder.dart';

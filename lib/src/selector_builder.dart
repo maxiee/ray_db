@@ -11,18 +11,21 @@ class SelectorBuilder {
   List<_Expression> _expressions = [];
 
   List<Map<String, dynamic>> findAll() {
-    final ret = _collection.db.select(toSQL());
-    if (ret.isNotEmpty) {
-      return ret;
-    } else {
-      return [];
+    if (_columnExisted()) {
+      final ret = _collection.db.select(toSQL());
+      if (ret.isNotEmpty) {
+        return ret;
+      }
     }
+    return [];
   }
 
   Map<String, dynamic>? findFirst() {
-    final ret = _collection.db.select(toSQL());
-    if (ret.isNotEmpty) {
-      return ret.first;
+    if (_columnExisted()) {
+      final ret = _collection.db.select(toSQL());
+      if (ret.isNotEmpty) {
+        return ret.first;
+      }
     }
   }
 
@@ -141,6 +144,14 @@ class SelectorBuilder {
       default:
         throw FormatException("invalid expression ${e.toString()}");
     }
+  }
+
+  bool _columnExisted() {
+    for (final e in _expressions) {
+      if (e.column.isEmpty) continue;
+      if (!_collection.columns.containsKey(e.column)) return false;
+    }
+    return true;
   }
 }
 
