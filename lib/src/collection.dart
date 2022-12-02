@@ -50,7 +50,7 @@ class Collection {
   void parseColumns() {
     final stmt = db.prepare("PRAGMA table_info($collection);");
     final ret = stmt.select();
-    print('parseColumns ret = $ret');
+    // print('parseColumns ret = $ret');
     for (Map column in ret) {
       String name = column['name'];
       Column c = Column(name, DataUtils.parseType(column['type']),
@@ -69,7 +69,7 @@ class Collection {
     final ret = db.select(
         'SELECT name FROM sqlite_master WHERE type=\'table\' AND name=?',
         [collection]);
-    print(ret);
+    // print(ret);
     return ret.isNotEmpty;
   }
 }
