@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ray_db/src/collection.dart';
 import 'package:ray_db/src/column.dart';
@@ -32,13 +34,13 @@ void main() {
     expect(column.primaryKey, true);
   });
 
-  test('test hasCollection', () async {
+  test('test collections()', () async {
     expect(db.hasCollection('test'), false);
     db.collection('test');
     expect(db.hasCollection('test'), true);
-    final stmt = db.db.prepare("PRAGMA table_list;");
-    final ret = stmt.select();
-    print(ret);
+    final collections = db.collections();
+    expect(collections.length, 1);
+    expect(collections.first.collection, 'test');
   });
 
   test('test store flatmap', () async {
