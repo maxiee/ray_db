@@ -22,7 +22,8 @@ class Collection {
     return SelectorBuilder(this);
   }
 
-  void storeMap(Map<String, dynamic> data) {
+  Map<String, dynamic> storeMap(Map<String, dynamic> data) {
+    assert(!data.containsKey('id'));
     List<String> sqlColumns = [];
     List<dynamic> sqlValues = [];
 
@@ -45,6 +46,9 @@ class Collection {
     db.execute(
         "INSERT INTO $collection (${sqlColumns.join(',')}) VALUES(${sqlValues.map((e) => "?").join(',')});",
         sqlValues);
+    final ret = Map<String, dynamic>.from(data);
+    ret['id'] = db.lastInsertRowId;
+    return ret;
   }
 
   void parseColumns() {

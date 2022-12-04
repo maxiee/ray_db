@@ -57,4 +57,13 @@ void main() {
     expect(collection.columns['flutter_skill']!.notNull, false);
     expect(collection.columns['flutter_skill']!.primaryKey, false);
   });
+
+  test('test store ret id', () async {
+    Collection collection = db.collection('test');
+    final ret = collection.storeMap({'name': 'maeiee', 'flutter_skill': 1});
+
+    expect(ret.containsKey('id'), true);
+    expect(ret, {'id': 1, 'name': 'maeiee', 'flutter_skill': 1});
+    expect(ret['id'], 1);
+  });
 }
