@@ -3,6 +3,7 @@ import 'package:ray_db/src/constants.dart';
 import 'package:ray_db/src/selector_builder.dart';
 import 'package:ray_db/src/util/data_utils.dart';
 import 'package:sqlite3/sqlite3.dart' as sq;
+import 'package:uuid/uuid.dart';
 
 class Collection {
   sq.Database db;
@@ -23,9 +24,22 @@ class Collection {
   }
 
   Map<String, dynamic> storeMap(Map<String, dynamic> data) {
-    assert(!data.containsKey('id'));
     List<String> sqlColumns = [];
     List<dynamic> sqlValues = [];
+    final ret = Map<String, dynamic>.from(data);
+
+    bool isExisted = data.containsKey('uuid') && data['uuid'] != null;
+
+    if (!isExisted) {
+      String uuid = const Uuid().v4();
+      sqlColumns.add('uuid');
+      sqlValues.add(uuid);
+      ret['uuid'] = uuid;
+
+      if (!columns.containsKey('uuid')) {
+        createColumn('uuid', InnerDataType.TEXT);
+      }
+    }
 
     for (final entry in data.entries) {
       String key = entry.key;
@@ -43,11 +57,16 @@ class Collection {
       sqlValues.add(value);
     }
 
-    db.execute(
-        "INSERT INTO $collection (${sqlColumns.join(',')}) VALUES(${sqlValues.map((e) => "?").join(',')});",
-        sqlValues);
-    final ret = Map<String, dynamic>.from(data);
-    ret['id'] = db.lastInsertRowId;
+    if (isExisted) {
+      db.execute(
+          "UPDATE $collection SET (${sqlColumns.join(',')}) = (${sqlValues.map((e) => "?").join(',')}) WHERE uuid = ?;",
+          [...sqlValues, sqlValues[sqlColumns.indexOf("uuid")]]);
+    } else {
+      db.execute(
+          "INSERT INTO $collection (${sqlColumns.join(',')}) VALUES(${sqlValues.map((e) => "?").join(',')});",
+          sqlValues);
+      ret['id'] = db.lastInsertRowId;
+    }
     return ret;
   }
 
