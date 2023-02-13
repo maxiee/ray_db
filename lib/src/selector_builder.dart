@@ -29,6 +29,12 @@ class SelectorBuilder {
     }
   }
 
+  // like
+  SelectorBuilder like(String column, dynamic value) {
+    _expressions.add(_Expression(column, value, _ExpressionType.like));
+    return this;
+  }
+
   // equal
   SelectorBuilder eq(String column, dynamic value) {
     _expressions.add(_Expression(column, value, _ExpressionType.eq));
@@ -124,7 +130,12 @@ class SelectorBuilder {
   String _expression2SQL(_Expression e) {
     dynamic value = e.value;
     if (value is String) {
-      value = "'$value'";
+      if (e.type == _ExpressionType.like) {
+        value = value.replaceAll('\'', '\'\'');
+        value = "'%$value%'";
+      } else {
+        value = "'$value'";
+      }
     }
     switch (e.type) {
       case _ExpressionType.eq:
@@ -139,6 +150,8 @@ class SelectorBuilder {
         return "${e.column} >= $value";
       case _ExpressionType.lte:
         return "${e.column} <= $value";
+      case _ExpressionType.like:
+        return "${e.column} LIKE $value";
       case _ExpressionType.and:
       case _ExpressionType.or:
       default:
@@ -155,7 +168,7 @@ class SelectorBuilder {
   }
 }
 
-enum _ExpressionType { eq, ne, gt, lt, gte, lte, and, or }
+enum _ExpressionType { eq, ne, gt, lt, gte, lte, and, or, like }
 
 class _Expression {
   _Expression(this.column, this.value, this.type);
